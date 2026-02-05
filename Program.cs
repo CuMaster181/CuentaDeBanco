@@ -1,36 +1,24 @@
 ﻿using CuentaDeBanco;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BancoPOO
 {
     class Program
     {
         public static List<Titular> listaTitulares = new List<Titular>();
-
-        static int SeleccionTitulares(List<Titular> lista)
+        public static string GenerarID()
         {
-            if (lista == null || lista.Count == 0)
-            {
-                Console.WriteLine("No hay Titulares Registrados.");
-                return -1;
-            }
-
-            Console.WriteLine("\n--- Titulares Registrados ---");
-            for (int i = 0; i < lista.Count; i++)
-            {
-                Console.WriteLine($"{i + 1}. {lista[i].Nombre} (ID: {lista[i].ID})");
-            }
-
-            Console.Write("Seleccione el titular por número (o 0 para cancelar): ");
-            if (int.TryParse(Console.ReadLine(), out int seleccion) && seleccion > 0 && seleccion <= lista.Count)
-            {
-                return seleccion - 1;
-            }
-            return -1;
+            Random rnd = new Random();
+            int numero = rnd.Next(100, 1000);
+            return numero.ToString();
         }
+
+
         static void Main(string[] args)
         {
+
             int caso = -1;
             do
             {
@@ -50,40 +38,57 @@ namespace BancoPOO
                     case 1:
                         Console.Write("Ingrese el nombre del titular: ");
                         string nombre = Console.ReadLine();
-                        Console.Write("Ingrese el ID del titular: ");
-                        string id = Console.ReadLine();
-                        Titular nuevoTitular = new Titular(nombre, id);
+
+                        string idGenerado = GenerarID();
+
+                        Titular nuevoTitular = new Titular(nombre, idGenerado);
                         listaTitulares.Add(nuevoTitular);
-                        Console.WriteLine("Titular registrado exitosamente.");
+                        Console.WriteLine($"Titular registrado exitosamente. ID asignado: {idGenerado}");
+
                         break;
                     case 2:
-                        int indiceDeposito = SeleccionTitulares(listaTitulares);
-                        if (indiceDeposito != -1)
+                        Console.Write("Ingrese el ID del titular: ");
+                        string idBuscado = Console.ReadLine()?.Trim();
+
+                        // Línea corregida: comparar con la propiedad ID
+                        Titular titularSeleccionado = listaTitulares.FirstOrDefault(t => t.ID == idBuscado);
+
+                        if (titularSeleccionado != null)
                         {
-                            Console.Write("Ingrese el monto a depositar: ");
-                            if (Double.TryParse(Console.ReadLine(), out Double montoDeposito))
+                            Console.Write("Ingrese el monto: ");
+                            if (double.TryParse(Console.ReadLine(), out double monto))
                             {
-                                listaTitulares[indiceDeposito].DepositarFondos(montoDeposito);
+                                titularSeleccionado.DepositarFondos(monto);
                             }
                             else
                             {
                                 Console.WriteLine("Monto inválido.");
                             }
                         }
+                        else
+                        {
+                            Console.WriteLine("No se encontró un titular con ese ID.");
+                        }
                         break;
                     case 3:
-                        int indiceRetiro = SeleccionTitulares(listaTitulares);
-                        if (indiceRetiro != -1)
+                        Console.Write("Ingrese el ID del titular: ");
+                        string idBuscadoRetiro = Console.ReadLine();
+                        Titular titularSeleccionadoRetiro = listaTitulares.FirstOrDefault(t => t.ID == idBuscadoRetiro);
+                        if (titularSeleccionadoRetiro != null)
                         {
                             Console.Write("Ingrese el monto a retirar: ");
-                            if (Double.TryParse(Console.ReadLine(), out Double montoRetiro))
+                            if (double.TryParse(Console.ReadLine(), out double montoRetiro))
                             {
-                                listaTitulares[indiceRetiro].RetirarFondos(montoRetiro);
+                                titularSeleccionadoRetiro.RetirarFondos(montoRetiro);
                             }
                             else
                             {
                                 Console.WriteLine("Monto inválido.");
                             }
+                        }
+                        else
+                        {
+                            Console.WriteLine("No se encontró un titular con ese ID.");
                         }
                         break;
                     case 0:

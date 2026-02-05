@@ -10,17 +10,19 @@ namespace CuentaDeBanco
     {
         public string Nombre { get; set; }
         public string ID { get; set; }
-        private Double saldoCuenta = 0.0;
+        private double saldoCuenta;
 
-        public Titular(string nombre, string iD)
+        public Titular(string nombre, string id)
         {
             Nombre = nombre;
-            ID = iD;
+            ID = id;
+            saldoCuenta = 0.0;
         }
+
+
         public virtual string MostrarInformacion()
         {
-            return $"Nombre: {Nombre} \n" +
-                $"Con ID: {ID}";
+            return $"Titular: {Nombre} \n";
         }
         public void DepositarFondos(Double monto)
         {
@@ -28,6 +30,7 @@ namespace CuentaDeBanco
             {
                 saldoCuenta += monto;
                 Console.WriteLine($"\nDepósito exitoso. Nuevo saldo de cuenta: {saldoCuenta}");
+                Console.Write(MostrarInformacion());
             }
             else
             {
