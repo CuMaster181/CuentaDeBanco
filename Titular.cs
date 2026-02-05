@@ -10,15 +10,13 @@ namespace CuentaDeBanco
     {
         public string Nombre { get; set; }
         public string ID { get; set; }
-        private double saldoCuenta;
+        private double saldoCuenta = 0.0;
 
         public Titular(string nombre, string id)
         {
             Nombre = nombre;
             ID = id;
-            saldoCuenta = 0.0;
         }
-
 
         public virtual string MostrarInformacion()
         {
